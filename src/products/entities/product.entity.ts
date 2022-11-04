@@ -1,4 +1,5 @@
 
+import { text } from 'stream/consumers';
 import {BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn} from 'typeorm'
 
 @Entity()
@@ -54,6 +55,11 @@ export class Product {
 
     
     //tags
+    @Column('text',{
+            array:true,
+            default:[]
+    })
+    tags:string[] 
     //image
 
     @BeforeUpdate()
