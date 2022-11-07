@@ -1,6 +1,8 @@
 
 import { text } from 'stream/consumers';
-import {BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn} from 'typeorm'
+import {BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm'
+import { ProductImage } from './product-image.entity';
+import { Detail } from '../entities/detail.entity';
 
 @Entity()
 export class Product {
@@ -60,7 +62,24 @@ export class Product {
             default:[]
     })
     tags:string[] 
+    
     //image
+    @OneToMany(
+        ()=>ProductImage,
+        (productImage)=>productImage.product,
+        //eager:cargar todas las relaciones
+        {cascade:true, eager:true}
+    )
+    images?: ProductImage[];
+
+
+    @OneToMany(
+        ()=>Detail,
+        (detail)=>detail.product,
+        {cascade:true, eager:true}
+    )
+    details?:Detail[]
+
 
     @BeforeUpdate()
     checkSlugUpdate(){
