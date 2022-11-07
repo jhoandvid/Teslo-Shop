@@ -4,7 +4,7 @@ import {BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedC
 import { ProductImage } from './product-image.entity';
 import { Detail } from '../entities/detail.entity';
 
-@Entity()
+@Entity({name:'products'})
 export class Product {
 
     @PrimaryGeneratedColumn('uuid')

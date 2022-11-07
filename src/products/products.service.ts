@@ -121,10 +121,7 @@ export class ProductsService {
         ...rest,
         images:images.map(image=>image.url),
         details:details.map(detail=>({
-          iva: detail.iva,
-          price: detail.price,
-          total: detail.total,
-          amount: detail.amount
+          ...detail
         }))
     }
   }
@@ -148,11 +145,7 @@ export class ProductsService {
         if(images){
           await queryRunner.manager.delete(ProductImage, { product:{id} })
           product.images=images.map(image=>this.productImageRepository.create({url:image}))
-        }else{
-
         }
-
- 
 
         if(details){
             await queryRunner.manager.delete(Detail, {product:id})
