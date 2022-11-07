@@ -25,7 +25,8 @@ export class Detail {
 
     @ManyToOne(
         ()=>Product,
-        (product)=>product.details
+        (product)=>product.details,
+        {onDelete:'CASCADE'}
     )
     product:Product
 }

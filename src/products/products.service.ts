@@ -79,10 +79,7 @@ export class ProductsService {
           ...product,
           images:product.images.map(image=>image.url),
           details:product.details.map(detail=>({
-            iva: detail.iva,
-            price: detail.price,
-            total: detail.total,
-            amount: detail.amount
+            ...detail
           }))
 
       }));
@@ -162,9 +159,7 @@ export class ProductsService {
             product.details=details.map(detail=>this.detailRepository.create({...detail}))
           }
 
-
           await queryRunner.manager.save(product);
-
           await queryRunner.commitTransaction();
           await queryRunner.release();
 
@@ -197,12 +192,22 @@ export class ProductsService {
       throw new BadRequestException(error.detail)
      }
 
-
      console.log(error);
-    this.logger.error(error);
-     throw new InternalServerErrorException(`Unexpected error, check server logs`)
-    
+      this.logger.error(error);
+       throw new InternalServerErrorException(`Unexpected error, check server logs`)
+  
+  }
 
+  async deleteAllProducts(){
+    const query=this.productRepository.createQueryBuilder('product');
+
+    try {
+
+      return await query.delete().where({}).execute()
+
+    } catch (error) {
+        this.handleDBException(error)
+    }
   }
 
 }
