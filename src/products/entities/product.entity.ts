@@ -56,6 +56,13 @@ export class Product {
     }
 
     
+
+    @BeforeUpdate()
+    checkSlugUpdate(){
+        //limpia la data
+        this.slug=this.slug.toLocaleLowerCase().replaceAll(' ','_').replaceAll("'", '')
+    }
+    
     //tags
     @Column('text',{
             array:true,
@@ -80,12 +87,6 @@ export class Product {
     )
     details?:Detail[]
 
-
-    @BeforeUpdate()
-    checkSlugUpdate(){
-        //limpia la data
-        this.slug=this.slug.toLocaleLowerCase().replaceAll(' ','_').replaceAll("'", '')
-    }
 
 }
 
