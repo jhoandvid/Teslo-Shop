@@ -8,6 +8,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { User } from './entities/user.entity';
 import { LoginUserDto } from './dto/login-user.dto';
+import { JwtPayload } from './interface/jwt-payload.interface';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +18,8 @@ export class AuthService {
 
   constructor(
     @InjectRepository(User)
-    private readonly userRepository:Repository<User>
+    private readonly userRepository:Repository<User>,
+    private readonly jwtService:JwtService
   ){
 
   }
@@ -38,7 +41,7 @@ export class AuthService {
     
       await this.userRepository.save(user);
       delete user.password
-      return user;
+      return {...user, token:this.getJwtToken({email:user.email})};
   
     } catch (err) {
       this.handleDBException(err)
@@ -64,8 +67,14 @@ export class AuthService {
      if(!bcrypt.compareSync(password, user.password))
         throw new UnauthorizedException('Credentials are not valid (password)')
    
-      return user;
+        
+      return {...user, token:this.getJwtToken({email:user.email})};
   }
+
+  private getJwtToken(payload:JwtPayload){
+       const token=this.jwtService.sign(payload);
+        return token;
+  } 
 
   
   handleDBException(error:any):never{
