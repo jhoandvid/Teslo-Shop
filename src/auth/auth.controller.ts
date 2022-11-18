@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Req, SetMetadata } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto';
-
 import { GetUser, RawHeader } from './descorators';
 import { User } from './entities/user.entity';
+import { UserRoleGuard } from './guards/user-role/user-role.guard';
 
 
 @Controller('auth')
@@ -29,7 +29,8 @@ export class AuthController {
     //Dcustom decorator data req
     @GetUser() user:User,
     @GetUser('email') userEmail:string,
-    @RawHeader() rawHeaders:String[]
+    @RawHeader() rawHeaders:String[],
+    
 
 
   ){
@@ -42,6 +43,19 @@ export class AuthController {
       userEmail, 
       rawHeaders
     }
+  }
+
+  @Get('private2')
+  @SetMetadata('roles', ['admin','super-user'])
+  @UseGuards(AuthGuard(), UserRoleGuard)
+  privateRoute2(
+    @GetUser() user: User
+  ){
+   return {
+    ok:true,
+    user
+  }
+
   }
 
 }
