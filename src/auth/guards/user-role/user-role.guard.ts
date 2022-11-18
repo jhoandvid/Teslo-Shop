@@ -1,6 +1,7 @@
 import { BadGatewayException, CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
+import { META_ROLES } from 'src/auth/decorators/role-protected.decorator';
 import { User } from '../../entities/user.entity';
 
 @Injectable()
@@ -17,7 +18,7 @@ export class UserRoleGuard implements CanActivate {
 
     console.log("USer Role Guard");
 
-    const validRoles:String []=this.reflector.get('roles', context.getHandler());
+    const validRoles:String []=this.reflector.get(META_ROLES, context.getHandler());
 
 
     const req=context.switchToHttp().getRequest();
