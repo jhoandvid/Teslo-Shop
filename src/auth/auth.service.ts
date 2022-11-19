@@ -24,6 +24,16 @@ export class AuthService {
 
   }
 
+  async checkAuthStatus(id:string){
+
+    const user=await this.userRepository.findOne({
+      where: {id},
+      select:{id:true, email:true, password:true, fullname:true, isActive:true}
+    })
+   
+    return {...user, token:this.getJwtToken({uid:user.id})};
+  }
+
 
   async create(createUserDto: CreateUserDto) {
 
