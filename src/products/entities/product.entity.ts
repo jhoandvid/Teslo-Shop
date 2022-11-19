@@ -1,100 +1,159 @@
 
 import { text } from 'stream/consumers';
-import {BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm'
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { ProductImage } from './product-image.entity';
 import { Detail } from '../entities/detail.entity';
 import { User } from 'src/auth/entities/user.entity';
 import { use } from 'passport';
+import { ApiProperty } from '@nestjs/swagger';
 
-@Entity({name:'products'})
+@Entity({ name: 'products' })
 export class Product {
 
+    @ApiProperty({
+        example:'2aea988a-fdce-4579-9041-2b2dff6544c2',
+        description:'Product ID',
+        uniqueItems:true
+    })
     @PrimaryGeneratedColumn('uuid')
-    id:string;
+    id: string;
 
-    @Column('text',{
-        unique:true
+    @ApiProperty({
+        example:'T-Shirt Teslo',
+        description:'Product Title',
+        uniqueItems:true
     })
-    title:string;
-
-    @Column('float',{
-        default:0
+    @Column('text', {
+        unique: true
     })
-    price:number;
+    title: string;
 
+
+
+    @ApiProperty({
+        example:0,
+        description:'Product price',
+       
+    })
+    @Column('float', {
+        default: 0
+    })
+    price: number;
+
+
+
+    @ApiProperty({
+        example:'wewer fdsf rewwe sfdsdf wrwer',
+        description:'Product description',
+        default:null
+    })
     @Column({
 
-        type:'text',
-        nullable:true
+        type: 'text',
+        nullable: true
     })
-    description:string;
+    @ApiProperty()
+    description: string;
 
-    @Column('text',{
-        unique:true
+
+
+    @ApiProperty({
+        example:'T_Shirt_Teslo',
+        description:'Product Slug - for SEO routes',
+        uniqueItems:true
     })
-    slug:string;
+    @Column('text', {
+        unique: true
+    })
+    slug: string;
 
-    @Column('int',{
+    @ApiProperty({
+        example:10,
+        description:'Product stock',
         default:0
     })
-    stock:number;
-
-    @Column('text',{
-        array:true
+    @Column('int', {
+        default: 0
     })
-    sizes:string[];
+    stock: number;
 
+
+
+    @ApiProperty({
+        example:['M', 'XL', 'XXL'],
+        description:'Product sizes',
+        default:0
+    })
+    @Column('text', {
+        array: true
+    })
+    sizes: string[];
+
+
+    @ApiProperty({
+        example:'women',
+        description:'Product gander',
+    })
     @Column('text')
-    gender:string;
+    gender: string;
 
-    @BeforeInsert()
-    checkSlugInsert(){
-        if(!this.slug){
-            this.slug=this.title
-        }
-        //limpia la data
-        this.slug=this.slug.toLocaleLowerCase().replaceAll(' ','_').replaceAll("'", '')
-
-    }
-
-    @ManyToOne(
-        ()=>User,
-        (user)=>user.product,
-        {eager:true}
-    )
-    user:User
-    
-
-    @BeforeUpdate()
-    checkSlugUpdate(){
-        //limpia la data
-        this.slug=this.slug.toLocaleLowerCase().replaceAll(' ','_').replaceAll("'", '')
-    }
-    
     //tags
-    @Column('text',{
-            array:true,
-            default:[]
+    @ApiProperty()
+    @Column('text', {
+        array: true,
+        default: []
     })
-    tags:string[] 
-    
+    tags: string[]
+
     //image
+    @ApiProperty()
     @OneToMany(
-        ()=>ProductImage,
-        (productImage)=>productImage.product,
+        () => ProductImage,
+        (productImage) => productImage.product,
         //eager:cargar todas las relaciones
-        {cascade:true, eager:true}
+        { cascade: true, eager: true }
     )
     images?: ProductImage[];
 
 
-    @OneToMany(
-        ()=>Detail,
-        (detail)=>detail.product,
-        {cascade:true, eager:true}
-    )
-    details?:Detail[]
 
+
+    @ManyToOne(
+        () => User,
+        (user) => user.product,
+        { eager: true }
+    )
+    user: User
+
+
+
+
+    @BeforeUpdate()
+    checkSlugUpdate() {
+        //limpia la data
+        this.slug = this.slug.toLocaleLowerCase().replaceAll(' ', '_').replaceAll("'", '')
+    }
+
+
+
+    @OneToMany(
+        () => Detail,
+        (detail) => detail.product,
+        { cascade: true, eager: true }
+    )
+    details?: Detail[]
+
+
+    
+    @BeforeInsert()
+    checkSlugInsert() {
+        if (!this.slug) {
+            this.slug = this.title
+        }
+        //limpia la data
+        this.slug = this.slug.toLocaleLowerCase().replaceAll(' ', '_').replaceAll("'", '')
+
+    }
 
 }
 
