@@ -24,7 +24,9 @@ export class AuthService {
 
   }
 
+
   async checkAuthStatus(id:string){
+
 
     const user=await this.userRepository.findOne({
       where: {id},
@@ -32,6 +34,9 @@ export class AuthService {
     })
    
     return {...user, token:this.getJwtToken({uid:user.id})};
+
+
+    
   }
 
 
